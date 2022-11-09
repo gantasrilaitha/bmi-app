@@ -1,156 +1,217 @@
 import 'dart:html';
 import 'package:flutter/material.dart';
+import 'package:firstapp/secondpage.dart';
 void main() {
-  runApp(MyApp());
+  runApp(const MyApp());
 }
+
+
 class MyApp extends StatelessWidget {
+  const MyApp({Key? key}) : super(key: key);
+
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
-      debugShowCheckedModeBanner: false,
-      title: 'BMI_CALCULATOR',
-      home: HomePage(),
+      home: MyHomePage(),
     );
   }
 }
-class HomePage extends StatefulWidget {
+
+class MyHomePage extends StatefulWidget {
+  const MyHomePage({Key? key}) : super(key: key);
+
   @override
-  _HomePageState createState() => _HomePageState();
+  State<MyHomePage> createState() => _MyHomePageState();
 }
-class _HomePageState extends State<HomePage> {
 
-  final _heightController = TextEditingController();
-  final _weightController = TextEditingController();
-  double? _bmi;
-  String _message = 'Please enter your height and weight';
-
-  void _calculate() {
-    final double? height = double.tryParse(_heightController.value.text);
-    final double? weight = double.tryParse(_weightController.value.text);
+class _MyHomePageState extends State<MyHomePage> {
+  double typedouble = 0;
+  double height = 0;
 
 
-    if (height == null || height <= 0 || weight == null || weight <= 0) {
-      setState(() {
-        _message = "Your height and weigh must be positive numbers";
-      });
-      return;
-    }
-
+  void _IncrementCounter(){
     setState(() {
-      _bmi = weight / (height * height);
-      if (_bmi! < 18.5) {
-        _message = "You are underweight";
-      } else if (_bmi! < 25) {
-        _message = 'you are fit and fine';
-      } else if (_bmi! < 30) {
-        _message = 'You are overweight';
-      } else {
-        _message = 'You are obese';
-      }
+      typedouble++;
+    });
+  }
+  void _DecrementCounter(){
+    setState(() {
+      typedouble--;
     });
   }
 
+  void _IncrementCounte1r(){
+    setState(() {
+      height++;
+    });
+  }
+  void _DecrementCounte2r(){
+    setState(() {
+      height--;
+    });
+  }
+
+
+  double bmic(){
+    double bmi = (typedouble) / (height)*(height);
+    return bmi;
+  }
+
+
+
+
   @override
   Widget build(BuildContext context) {
+
     return Scaffold(
-        backgroundColor: Colors.lightGreenAccent,
-        appBar:AppBar(title:Text('Welcome to BMI')),
-        body: Center(
+        backgroundColor: Colors.black54,
+        appBar: AppBar(
+          title: Text("BMI Calculator", style: TextStyle(fontWeight: FontWeight.bold),),
+        ),
+        body: Column(
+            mainAxisAlignment: MainAxisAlignment.start,
+            children: [
+              Text("Hello welcome to BMI Calculator",
+                  style: TextStyle(fontSize: 21, fontWeight: FontWeight.bold, color: Colors.red)),
 
-            child: Container(
-              // _message='enter your details',
-                width: 1400,
-                child: Card(
-                  color: Colors.redAccent,
-                  elevation: 80,
-                  child: Padding(
-                    padding: const EdgeInsets.all(20),
-                    child: Column(
-                        mainAxisSize: MainAxisSize.min,
-                        children: [
-                          TextField(
-                            keyboardType:
-                            TextInputType.numberWithOptions(decimal: true),
-                            decoration: InputDecoration(labelText: 'Height (m)'),
-                            controller: _heightController,
-                          ),
-                          TextField(
-                            keyboardType:
-                            TextInputType.numberWithOptions(decimal: true),
-                            decoration: InputDecoration(
-                              labelText: 'Weight (kg)',
+              Container(
+
+                height:150,
+                width: 650,
+                color: Colors.yellow,
+
+                child: Row(
+
+                  children: [
+                    Text(
+                      "Weight ${typedouble.round()}", style: TextStyle(fontSize: 23, fontWeight: FontWeight.normal ,color: Colors.red),
+                    ),
+
+                    ElevatedButton(
+
+                      onPressed: _IncrementCounter,
+                      child: Text('+'),
+                      style: ElevatedButton.styleFrom(
+                        shape: CircleBorder(),
+                        padding: EdgeInsets.all(23),
+                      ),
+                    ),
+                    ElevatedButton(
+                      onPressed: _DecrementCounter,
+                      child: Text('-'),
+                      style: ElevatedButton.styleFrom(
+                        shape: CircleBorder(),
+                        padding: EdgeInsets.all(23),
+                      ),
+                    ),
+
+                    Slider(value: typedouble,min:0,max:635, onChanged: (value){
+                      setState(() {
+                        typedouble = value;
+                      });
+                    })
+                  ],
+                ),
+
+              ),
+              Container(
+
+                height:150,
+                width: 650,
+                color: Colors.grey,
+
+                child: Row(
+
+                  children: [
+                    Text(
+                      "Height ${height.round()}", style: TextStyle(fontSize: 23, fontWeight: FontWeight.normal ,color: Colors.red),
+                    ),
+
+                    ElevatedButton(
+
+                      onPressed: _IncrementCounte1r,
+                      child: Text('+'),
+                      style: ElevatedButton.styleFrom(
+                        shape: CircleBorder(),
+                        padding: EdgeInsets.all(23),
+                      ),
+                    ),
+                    ElevatedButton(
+                      onPressed: _DecrementCounte2r,
+                      child: Text('-'),
+                      style: ElevatedButton.styleFrom(
+                        shape: CircleBorder(),
+                        padding: EdgeInsets.all(23),
+                      ),
+                    ),
+
+                    Slider(value: height,min:0,max:140, activeColor: Colors.green,onChanged: (value){
+                      setState(() {
+                        height = value;
+                      });
+                    })
+                  ],
+                ),
+              ),
+              Container(
+                height: 133,
+                width: 309,
+                color: Colors.black87,
+
+                child: Column(
+                  children: [
+
+                    TextButton(onPressed: (){
+                      double bmi=bmic();
+
+                      Navigator.push(context,MaterialPageRoute(builder: (bmi)=>SecondPage()));
+                    },
+                        child: Column(
+                          children: [
+                            Text("Calculate", style: TextStyle(
+                                fontSize: 20,
+                                fontWeight: FontWeight.bold,
+                                color: Colors.deepPurple
+                            )
+
+                            )
+
+
+
+                          ],
+
+                        )
+
+
+                    ),
+
+                    Container(
+                        height: 133,
+                        width: 309,
+                        color: Colors.black87,
+
+                        child: Column(
+                          children: [
+
+                            Text("BMI=${((typedouble)/((height)*(height)))}",style:TextStyle(
+                                fontSize: 20,
+                                fontWeight: FontWeight.bold,
+                                color: Colors.deepPurple
+
+                            )
+
                             ),
-                            controller: _weightController,
-                          ),
-                          TextButton(
-                            onPressed: _calculate, child: const Text('Calculate'),
+                          ],
 
-                          ),
-                          SizedBox(
-                              height: 80
-                          ),
-                          Container(
-                            child: Text(
-                              _bmi == null ? 'No Result' : _bmi!.toStringAsFixed(2),
-                              style: TextStyle(fontSize: 30),
-                              textAlign: TextAlign.center,
-                            ),
-                          ),
-                          SizedBox(
-                              height: 80
-                          ),
-                          Container(
-                            child: Text(
-                              _message,
-                              textAlign: TextAlign.center,
-                            ),
-                          ),
-
-                          GestureDetector(
-                            onTap: (){
-                              Navigator.push(context,MaterialPageRoute(builder:(context)=>ResultPage(bmi:0)));
-
-                            },
-                            child: Container(
-                              height : 5,
-                              width: 800,
-                              color:Colors.yellow,
-
-                            ),
+                        )
 
 
-                          ),
+                    ),
 
-                        ]),
-                  ),
-                )
-            )));
-  }
-}
+                  ],
 
-class ResultPage extends StatefulWidget {
-  ResultPage({Key? key, required this.bmi}) : super(key: key);
-  double bmi;
-  @override
-  State<ResultPage> createState() => _ResultPageState();
-}
 
-class _ResultPageState extends State<ResultPage> {
-  @override
-  Widget build(BuildContext context) {
-    return Scaffold(
-      appBar: AppBar(
-        title: Text("GO BACK!"),
-      ),
-      body: Center(
-          child: Column(
-              mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-              crossAxisAlignment: CrossAxisAlignment.center,
-              children: [
-                Text("RECALCULATE: ${widget.bmi}"),
-              ]
-          )
-      ),
-    );
-  }
-}
+                ),
+
+              )]));
+  }}
